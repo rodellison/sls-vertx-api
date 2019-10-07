@@ -23,7 +23,8 @@ public class HandlerVerticle extends AbstractVerticle {
         eventBus.consumer("GET:/users", message -> {
                 // Do something with Vert.x async, reactive APIs
                 final Map<String, Object> response = new HashMap<>();
-                //response.put("statusCode", 200);
+
+            //response.put("statusCode", 200);
                 //response.put("body", "Received GET:/users");
                 response.put("served By", this.toString());
             message.reply(new JsonObject(response).encode());

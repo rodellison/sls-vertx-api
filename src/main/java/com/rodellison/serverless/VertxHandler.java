@@ -26,8 +26,8 @@ public class VertxHandler implements RequestHandler<Map<String, Object>, ApiGate
         vertx.deployVerticle(HandlerVerticle.class.getName(), deploymentOptions);
     }
 
-    public VertxHandler() {
-    }
+//    public VertxHandler() {
+//    }
 
     @Override
     public ApiGatewayResponse handleRequest(Map<String, Object> map, Context context) {
@@ -46,7 +46,9 @@ public class VertxHandler implements RequestHandler<Map<String, Object>, ApiGate
             }
         });
         try {
-            return ApiGatewayResponse.builder().setObjectBody(new Response("Sent by : " + this.toString() + " - " + future.get(5,TimeUnit.SECONDS))).build();
+            return ApiGatewayResponse.builder()
+                    .setObjectBody(new Response("Sent by : " + this.toString() + " - " + future.get(5,TimeUnit.SECONDS)))
+                    .build();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
