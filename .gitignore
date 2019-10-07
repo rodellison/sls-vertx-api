@@ -1,0 +1,21 @@
+*.class
+target
+/bin/
+/.settings/
+.project
+.classpath
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# Serverless directories
+.serverless
+
+# intellij stuff
+.idea
+.idea/
+
+#mac stuff
+.DS_Store
