@@ -20,21 +20,18 @@ public class VertxHandler implements RequestHandler<Map<String, Object>, ApiGate
     private static Vertx vertx;
     {
         System.setProperty("vertx.disableFileCPResolving", "true");
-        VertxOptions vertxOptions = new VertxOptions().setClustered(true);
         vertx = Vertx.vertx();
         DeploymentOptions deploymentOptions = new DeploymentOptions().setInstances(Runtime.getRuntime().availableProcessors());
         vertx.deployVerticle(HandlerVerticle.class.getName(), deploymentOptions);
     }
 
-//    public VertxHandler() {
-//    }
 
     @Override
     public ApiGatewayResponse handleRequest(Map<String, Object> map, Context context) {
 
         final CompletableFuture<String> future = new CompletableFuture<String>();
 
-        vertx.eventBus().send(map.get("httpMethod").toString() + ":" + map.get("resource"), new JsonObject(map).encode(), rs -> {
+        vertx.eventBus().request(map.get("httpMethod").toString() + ":" + map.get("resource"), new JsonObject(map).encode(), rs -> {
             if(rs.succeeded()) {
                 LOG.info("SUCCESS");
                 LOG.info(rs.result().body());
