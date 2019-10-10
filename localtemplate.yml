@@ -1,4 +1,8 @@
 # sam local start-api -t localtemplate.yml
+# sam local start-api -t localtemplate.yml  --skip-pull-image     (after initial runs)
+
+# note: CodeURI element can be a .jar file, or path to the code extracted from a shaded jar  - using the Unarchiver
+
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
@@ -9,7 +13,7 @@ Resources:
       FunctionName: FloridaKeysAPI
       Runtime: java8
       Timeout: 60
-      CodeUri: target/floridakeys-api-dev.jar
+      CodeUri: target/floridakeys-api-dev
       Handler: com.rodellison.serverless.ServiceLauncher::handleRequest
       Events: 
         Api: 
@@ -32,3 +36,8 @@ Resources:
           Properties:
             Path: /users/{id}
             Method: POST
+        Api4:
+          Type: Api
+          Properties:
+            Path: /data
+            Method: GET

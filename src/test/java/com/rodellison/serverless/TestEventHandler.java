@@ -132,7 +132,10 @@ public class TestEventHandler {
     @AfterAll
     public static void tearDown()
     {
-        sl.vertx.undeploy("com.rodellison.serverless.handlers.WebHandlerVerticle");
+        sl.vertx.undeploy("com.rodellison.serverless.handlers.DBHandlerVerticle");
+        sl.vertx.undeploy("com.rodellison.serverless.handlers.DataExtratorHandlerVerticle");
+        sl.vertx.undeploy("com.rodellison.serverless.handlers.RemoteDataHandlerVerticle");
+        sl.vertx.undeploy("com.rodellison.serverless.handlers.EventHandlerVerticle");
         sl = null;
 
 

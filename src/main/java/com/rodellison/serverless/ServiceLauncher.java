@@ -10,6 +10,7 @@ import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -20,20 +21,29 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
     public Vertx vertx;
     {
         System.setProperty("vertx.disableFileCPResolving", "true");
-        vertx = Vertx.vertx();
-        VertxOptions vertxOptions = new VertxOptions().setClustered(true);
+
+        VertxOptions vertxOptions = new VertxOptions()
+                .setBlockedThreadCheckInterval(2000);
+        vertx = Vertx.vertx(vertxOptions);
+
         DeploymentOptions deploymentOptions = new DeploymentOptions();
-        deploymentOptions.setInstances(Runtime.getRuntime().availableProcessors());
+        final int instanceCount = Runtime.getRuntime().availableProcessors();
+        logger.info("Starting Service launcher and setting instances to: " + instanceCount);
+        deploymentOptions.setInstances(instanceCount);
 
         final List<String> verticles = Arrays.asList(
-                "com.rodellison.serverless.handlers.EventHandlerVerticle");
+                "com.rodellison.serverless.handlers.EventHandlerVerticle",
+                "com.rodellison.serverless.handlers.RemoteDataHandlerVerticle",
+                "com.rodellison.serverless.handlers.DataExtractorHandlerVerticle",
+                "com.rodellison.serverless.handlers.DBHandlerVerticle"
+        );
 
         verticles.stream().forEach(verticle -> vertx.deployVerticle(verticle, deploymentOptions, deployResponse -> {
             if (deployResponse.failed()) {
                 logger.error("Unable to deploy verticle: " + verticle,
                         deployResponse.cause());
             } else {
-                logger.debug(verticle + " deployed");
+                logger.info(verticle + " deployed");
             }
         }));
     }
@@ -55,12 +65,19 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
             }
         });
         try {
+            Map<String, String> contentHeader = new HashMap<>();
+            contentHeader.put("Content-type", "application/json");
             return ApiGatewayResponse.builder()
-                    .setObjectBody(new Response("Sent by : " + this.toString() + " - " + future.get(5,TimeUnit.SECONDS)))
+ //                   .setObjectBody(new Response("Sent by : " + this.toString() + " - " + future.get(5,TimeUnit.SECONDS)))
+                    .setObjectBody(new Response("Sent by : " + this.toString() + " - " + future.get()))
+                    .setHeaders(contentHeader)
                     .build();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (InterruptedException | ExecutionException e) {
+ //       } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
-        return ApiGatewayResponse.builder().setObjectBody(new Response("TIMEOUT")).build();
+        return ApiGatewayResponse.builder().
+                setObjectBody(new Response("TIMEOUT"))
+                .build();
     }
 }
