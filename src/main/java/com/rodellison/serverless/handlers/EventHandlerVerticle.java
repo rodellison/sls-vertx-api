@@ -2,7 +2,9 @@ package com.rodellison.serverless.handlers;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 
@@ -12,20 +14,20 @@ import java.util.Map;
 /**
  * Created by lbulic on 10/19/17.
  */
-public class WebHandlerVerticle extends AbstractVerticle {
+public class EventHandlerVerticle extends AbstractVerticle {
 
-    private static final Logger logger = Logger.getLogger(WebHandlerVerticle.class);
+    private static final Logger logger = Logger.getLogger(EventHandlerVerticle.class);
 
     @Override
     public void start(Future<Void> fut) {
         final EventBus eventBus = vertx.eventBus();
 
         eventBus.consumer("GET:/users", message -> {
-                // Do something with Vert.x async, reactive APIs
-                final Map<String, Object> response = new HashMap<>();
+            // Do something with Vert.x async, reactive APIs
+            final Map<String, Object> response = new HashMap<>();
 
-                response.put("statusCode", 200);
-                response.put("body", "Received GET:/users");
+            response.put("statusCode", 200);
+            response.put("body", "Received GET:/users");
 
             message.reply(new JsonObject(response).encode());
         });
@@ -39,7 +41,7 @@ public class WebHandlerVerticle extends AbstractVerticle {
         });
 
         eventBus.consumer("POST:/users", message -> {
-                // Do something with Vert.x async, reactive APIs
+            // Do something with Vert.x async, reactive APIs
             final Map<String, Object> response = new HashMap<>();
             response.put("statusCode", 201);
             response.put("body", "Received POST:/users");
@@ -47,7 +49,7 @@ public class WebHandlerVerticle extends AbstractVerticle {
         });
 
         eventBus.consumer("PUT:/users/{id}", message -> {
-                // Do something with Vert.x async, reactive APIs
+            // Do something with Vert.x async, reactive APIs
             final Map<String, Object> response = new HashMap<>();
             response.put("statusCode", 200);
             response.put("body", "Received PUT:/users/{id}");
@@ -55,7 +57,7 @@ public class WebHandlerVerticle extends AbstractVerticle {
         });
 
         eventBus.consumer("DELETE:/users/{id}", message -> {
-                // Do something with Vert.x async, reactive APIs
+            // Do something with Vert.x async, reactive APIs
             final Map<String, Object> response = new HashMap<>();
             response.put("statusCode", 200);
             response.put("body", "Received DELETE:/users/{id}");
@@ -64,6 +66,6 @@ public class WebHandlerVerticle extends AbstractVerticle {
 
         fut.complete();
     }
-    
+
 }
 

@@ -22,9 +22,11 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
         System.setProperty("vertx.disableFileCPResolving", "true");
         vertx = Vertx.vertx();
         VertxOptions vertxOptions = new VertxOptions().setClustered(true);
-        DeploymentOptions deploymentOptions = new DeploymentOptions().setInstances(Runtime.getRuntime().availableProcessors());
+        DeploymentOptions deploymentOptions = new DeploymentOptions();
+        deploymentOptions.setInstances(Runtime.getRuntime().availableProcessors());
+
         final List<String> verticles = Arrays.asList(
-                "com.rodellison.serverless.handlers.WebHandlerVerticle");
+                "com.rodellison.serverless.handlers.EventHandlerVerticle");
 
         verticles.stream().forEach(verticle -> vertx.deployVerticle(verticle, deploymentOptions, deployResponse -> {
             if (deployResponse.failed()) {
@@ -41,7 +43,7 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
 
         final CompletableFuture<String> future = new CompletableFuture<String>();
 
-        vertx.eventBus().send(map.get("httpMethod").toString() + ":" + map.get("resource"), new JsonObject(map).encode(), rs -> {
+        vertx.eventBus().request(map.get("httpMethod").toString() + ":" + map.get("resource"), new JsonObject(map).encode(), rs -> {
             if(rs.succeeded()) {
                 logger.info("ServiceLauncher::handleRequest: SUCCESS");
                 logger.info(rs.result().body());

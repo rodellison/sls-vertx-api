@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.util.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestWebHandlerFunctions {
+public class TestEventHandler {
 
-    private final Logger logger = Logger.getLogger(TestWebHandlerFunctions.class);
+    private final Logger logger = Logger.getLogger(TestEventHandler.class);
     private static ServiceLauncher sl;
     private Context testContext;
 
@@ -34,7 +34,7 @@ public class TestWebHandlerFunctions {
 
     @Test
     @Order(1)
-    public void testWebHandlerGetUsersNoName() throws Throwable {
+    public void testEventHandlerGetUsersNoName() throws Throwable {
 
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "GET");
@@ -42,7 +42,7 @@ public class TestWebHandlerFunctions {
 
         ApiGatewayResponse theAPIGateWayResponse;
 
-        logger.info("Test WebHandlerVerticle responds for GET:/users");
+        logger.info("Test EventHandlerVerticle responds for GET:/users");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
         Assert.assertTrue(theAPIGateWayResponse.getBody().contains("Received GET:/users"));
 
@@ -50,7 +50,7 @@ public class TestWebHandlerFunctions {
 
     @Test
     @Order(2)
-    public void testWebHandlerGetUsersWithName() throws Throwable {
+    public void testEventHandlerGetUsersWithName() throws Throwable {
 
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "GET");
@@ -58,7 +58,7 @@ public class TestWebHandlerFunctions {
 
         ApiGatewayResponse theAPIGateWayResponse;
 
-        logger.info("Test WebHandlerVerticle responds for GET:/users/{id}");
+        logger.info("Test EventHandlerVerticle responds for GET:/users/{id}");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
         Assert.assertTrue(theAPIGateWayResponse.getBody().contains("{id}"));
 
@@ -66,7 +66,7 @@ public class TestWebHandlerFunctions {
 
     @Test
     @Order(3)
-    public void testWebHandlerPostUsers() throws Throwable {
+    public void testEventHandlerPostUsers() throws Throwable {
 
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "POST");
@@ -74,7 +74,7 @@ public class TestWebHandlerFunctions {
 
         ApiGatewayResponse theAPIGateWayResponse;
 
-        logger.info("Test WebHandlerVerticle responds for POST:/users");
+        logger.info("Test EventHandlerVerticle responds for POST:/users");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
         Assert.assertTrue(theAPIGateWayResponse.getBody().contains("Received POST:/users"));
 
@@ -82,7 +82,7 @@ public class TestWebHandlerFunctions {
 
     @Test
     @Order(4)
-    public void testWebHandlerPutUsersWithName() throws Throwable {
+    public void testEventHandlerPutUsersWithName() throws Throwable {
 
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "PUT");
@@ -90,7 +90,7 @@ public class TestWebHandlerFunctions {
 
         ApiGatewayResponse theAPIGateWayResponse;
 
-        logger.info("Test WebHandlerVerticle responds for Post:/users");
+        logger.info("Test EventHandlerVerticle responds for Post:/users");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
         Assert.assertTrue(theAPIGateWayResponse.getBody().contains("Received PUT:/users/{id}"));
 
@@ -98,7 +98,7 @@ public class TestWebHandlerFunctions {
 
     @Test
     @Order(5)
-    public void testWebHandlerDeleteUsersWithName() throws Throwable {
+    public void testEventHandlerDeleteUsersWithName() throws Throwable {
 
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "DELETE");
@@ -106,7 +106,7 @@ public class TestWebHandlerFunctions {
 
         ApiGatewayResponse theAPIGateWayResponse;
 
-        logger.info("Test WebHandlerVerticle responds for DELETE:/users/{id}");
+        logger.info("Test EventHandlerVerticle responds for DELETE:/users/{id}");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
         Assert.assertTrue(theAPIGateWayResponse.getBody().contains("Received DELETE:/users/{id}"));
 
@@ -114,7 +114,7 @@ public class TestWebHandlerFunctions {
 
     @Test
     @Order(6)
-    public void testWebHandlerUnsupportedResourceURI() throws Throwable {
+    public void testEventHandlerUnsupportedResourceURI() throws Throwable {
 
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "GET");
@@ -122,7 +122,7 @@ public class TestWebHandlerFunctions {
 
         ApiGatewayResponse theAPIGateWayResponse;
 
-        logger.info("Test WebHandlerVerticle responds with failure");
+        logger.info("Test EventHandlerVerticle responds with failure");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
         Assert.assertTrue(theAPIGateWayResponse.getBody().contains("No handlers for address"));
 

@@ -51,7 +51,7 @@ public class TestAPIGatewayResponse {
         JsonObject testObjectBody = new JsonObject();
         testObjectBody.put("test1", "value1");
 
-        logger.info("Test testAPIGateWayResponseRawBody");
+        logger.info("Test testAPIGateWayResponseObjectBody");
 
         ApiGatewayResponse testAPIGatewayResponse = ApiGatewayResponse.builder()
                 .setObjectBody(testObjectBody)
