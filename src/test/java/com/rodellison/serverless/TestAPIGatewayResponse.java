@@ -40,7 +40,7 @@ public class TestAPIGatewayResponse {
         Assert.assertTrue(testAPIGatewayResponse.getBody().equals("test"));
         Assert.assertTrue(testAPIGatewayResponse.getStatusCode() == 200);
         Assert.assertTrue(testAPIGatewayResponse.getHeaders().isEmpty() == true);
-        Assert.assertTrue(testAPIGatewayResponse.isBase64Encoded() == false);
+        Assert.assertTrue(testAPIGatewayResponse.isIsBase64Encoded() == false);
 
     }
 
