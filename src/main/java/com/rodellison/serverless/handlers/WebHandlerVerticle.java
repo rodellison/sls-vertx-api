@@ -1,4 +1,4 @@
-package com.rodellison.serverless;
+package com.rodellison.serverless.handlers;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -12,9 +12,9 @@ import java.util.Map;
 /**
  * Created by lbulic on 10/19/17.
  */
-public class HandlerVerticle extends AbstractVerticle {
+public class WebHandlerVerticle extends AbstractVerticle {
 
-    private static final Logger LOG = Logger.getLogger(HandlerVerticle.class);
+    private static final Logger logger = Logger.getLogger(WebHandlerVerticle.class);
 
     @Override
     public void start(Future<Void> fut) {
@@ -24,9 +24,17 @@ public class HandlerVerticle extends AbstractVerticle {
                 // Do something with Vert.x async, reactive APIs
                 final Map<String, Object> response = new HashMap<>();
 
-            //response.put("statusCode", 200);
-                //response.put("body", "Received GET:/users");
-                response.put("served By", this.toString());
+                response.put("statusCode", 200);
+                response.put("body", "Received GET:/users");
+
+            message.reply(new JsonObject(response).encode());
+        });
+
+        eventBus.consumer("GET:/users/{id}", message -> {
+            // Do something with Vert.x async, reactive APIs
+            final Map<String, Object> response = new HashMap<>();
+            response.put("statusCode", 200);
+            response.put("body", "Received GET:/users/{id}");
             message.reply(new JsonObject(response).encode());
         });
 
@@ -35,14 +43,6 @@ public class HandlerVerticle extends AbstractVerticle {
             final Map<String, Object> response = new HashMap<>();
             response.put("statusCode", 201);
             response.put("body", "Received POST:/users");
-            message.reply(new JsonObject(response).encode());
-        });
-
-        eventBus.consumer("GET:/users/{id}", message -> {
-                // Do something with Vert.x async, reactive APIs
-            final Map<String, Object> response = new HashMap<>();
-            response.put("statusCode", 200);
-            response.put("body", "Received GET:/users/{id}");
             message.reply(new JsonObject(response).encode());
         });
 
@@ -61,6 +61,8 @@ public class HandlerVerticle extends AbstractVerticle {
             response.put("body", "Received DELETE:/users/{id}");
             message.reply(new JsonObject(response).encode());
         });
+
+        fut.complete();
     }
     
 }

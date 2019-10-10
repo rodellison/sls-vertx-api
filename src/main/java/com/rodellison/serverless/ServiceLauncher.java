@@ -3,31 +3,38 @@ package com.rodellison.serverless;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-public class VertxHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse>{
+public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiGatewayResponse>{
 
-    private static final Logger LOG = Logger.getLogger(VertxHandler.class);
-
-    private static Vertx vertx;
+    private static final Logger logger = Logger.getLogger(ServiceLauncher.class);
+    public Vertx vertx;
     {
         System.setProperty("vertx.disableFileCPResolving", "true");
-        VertxOptions vertxOptions = new VertxOptions().setClustered(true);
         vertx = Vertx.vertx();
+        VertxOptions vertxOptions = new VertxOptions().setClustered(true);
         DeploymentOptions deploymentOptions = new DeploymentOptions().setInstances(Runtime.getRuntime().availableProcessors());
-        vertx.deployVerticle(HandlerVerticle.class.getName(), deploymentOptions);
-    }
+        final List<String> verticles = Arrays.asList(
+                "com.rodellison.serverless.handlers.WebHandlerVerticle");
 
-//    public VertxHandler() {
-//    }
+        verticles.stream().forEach(verticle -> vertx.deployVerticle(verticle, deploymentOptions, deployResponse -> {
+            if (deployResponse.failed()) {
+                logger.error("Unable to deploy verticle: " + verticle,
+                        deployResponse.cause());
+            } else {
+                logger.debug(verticle + " deployed");
+            }
+        }));
+    }
 
     @Override
     public ApiGatewayResponse handleRequest(Map<String, Object> map, Context context) {
@@ -36,12 +43,12 @@ public class VertxHandler implements RequestHandler<Map<String, Object>, ApiGate
 
         vertx.eventBus().send(map.get("httpMethod").toString() + ":" + map.get("resource"), new JsonObject(map).encode(), rs -> {
             if(rs.succeeded()) {
-                LOG.info("SUCCESS");
-                LOG.info(rs.result().body());
+                logger.info("ServiceLauncher::handleRequest: SUCCESS");
+                logger.info(rs.result().body());
                 future.complete(rs.result().body().toString());
             } else {
-                LOG.info("FAILED");
-                LOG.info(rs.cause().getMessage());
+                logger.info("ServiceLauncher::handleRequest: FAILED");
+                logger.info(rs.cause().getMessage());
                 future.complete(rs.cause().getMessage());
             }
         });
