@@ -55,7 +55,7 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
         final CompletableFuture<String> future = new CompletableFuture<String>();
 
         logger.info(map);
-        vertx.eventBus().request(map.get("httpMethod").toString() + ":" + map.get("resource"), map.get("pathParameters"), rs -> {
+        vertx.eventBus().request(map.get("httpMethod").toString() + ":" + map.get("resource"), new JsonObject(map).encode(), rs -> {
             if(rs.succeeded()) {
                 logger.info("ServiceLauncher::handleRequest: SUCCESS");
                 logger.info(rs.result().body());

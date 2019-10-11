@@ -23,8 +23,9 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
         eventBus.consumer("GET:/loaddata/{yearmonth}", message -> {
 
-            final Message<Object> theMessage = message;
-            String theMessagePathParm = (String) theMessage.body();
+            String theMessage = message.body().toString();
+            JsonObject messageJson = new JsonObject(theMessage);
+            String theMessagePathParm = messageJson.getValue("pathParameters").toString();
 
             logger.info("GET:/loaddata/{yearmonth} function invoked with parm: " + theMessagePathParm);
 
