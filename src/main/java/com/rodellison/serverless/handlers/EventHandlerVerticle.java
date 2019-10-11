@@ -113,7 +113,7 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
                         final Map<String, Object> response = new HashMap<>();
                         response.put("statusCode", 200);
-                        response.put("body", "Received GET:/loaddata/{yearmonth}, result: " + resExtract.result());
+                        response.put("body", "Received GET:/loaddata/{yearmonth}, result: " + resDB.result());
                         message.reply(new JsonObject(response).encode());
                     });
                 });
