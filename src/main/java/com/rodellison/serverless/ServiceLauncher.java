@@ -69,13 +69,16 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
         try {
             Map<String, String> contentHeader = new HashMap<>();
             contentHeader.put("Content-type", "application/json");
+
+            //different seconds value to account for different values - if calling loaddata, then it could take longer to process
+            int seconds = 0;
+            seconds = map.get("resource").toString().contains("loaddata") ? 20 : 5;
+
             return ApiGatewayResponse.builder()
- //                   .setObjectBody(new Response("Sent by : " + this.toString() + " - " + future.get(5,TimeUnit.SECONDS)))
-                    .setObjectBody(new Response("Sent by : " + this.toString() + " - " + future.get()))
+                    .setObjectBody(new Response("Sent by : " + this.toString() + " - " + future.get(seconds,TimeUnit.SECONDS)))
                     .setHeaders(contentHeader)
                     .build();
-        } catch (InterruptedException | ExecutionException e) {
- //       } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
         return ApiGatewayResponse.builder().
