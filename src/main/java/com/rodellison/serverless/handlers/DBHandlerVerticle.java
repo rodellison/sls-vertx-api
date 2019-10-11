@@ -52,7 +52,7 @@ public class DBHandlerVerticle extends AbstractVerticle {
 
             executeLongRunningBlockingOperation();
 
-            logger.info("DataExtracterHandlerVerticle processed request");
+            logger.info("DBHandlerVerticle processed request");
             final Map<String, Object> response = new HashMap<>();
             response.put("body", "...database updated");
             message.reply(new JsonObject(response));

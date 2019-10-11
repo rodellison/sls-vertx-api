@@ -92,10 +92,10 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
                         eventBus.request(Services.INSERTDBDATA.toString(), extractResult, rs -> {
                             if (rs.succeeded()) {
-                                logger.info("DataExtractHandler: SUCCESS");
+                                logger.info("DBHandler: SUCCESS");
                                 dbHandlerFuture.complete(rs.result().body().toString());
                             } else {
-                                logger.info("DataExtractHandler: FAILED");
+                                logger.info("DBHandler: FAILED");
                                 dbHandlerFuture.complete(rs.cause().getMessage());
                             }
                         });
