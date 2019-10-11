@@ -1,10 +1,9 @@
 package com.rodellison.serverless;
 
-import com.amazonaws.services.lambda.runtime.ClientContext;
-import com.amazonaws.services.lambda.runtime.CognitoIdentity;
+
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import io.vertx.core.json.JsonObject;
+import com.rodellison.serverless.handlers.*;
+
 import org.junit.Assert;
 import org.apache.log4j.Logger;
 import org.junit.Assert.*;
@@ -28,8 +27,17 @@ public class TestEventHandler {
     @BeforeClass
     public static void setUp() throws IOException {
 
-        //This call establishes service front door, and starts vertx
+         //This call establishes service front door, and starts vertx
         sl = new ServiceLauncher();
+        try
+        {
+            //Just waiting one second for verticles to get up, before running tests
+            Thread.sleep(1000);
+
+        } catch (InterruptedException ie)
+        {
+
+        }
     }
 
     @Test
@@ -132,13 +140,11 @@ public class TestEventHandler {
     @AfterAll
     public static void tearDown()
     {
-        sl.vertx.undeploy("com.rodellison.serverless.handlers.DBHandlerVerticle");
-        sl.vertx.undeploy("com.rodellison.serverless.handlers.DataExtratorHandlerVerticle");
-        sl.vertx.undeploy("com.rodellison.serverless.handlers.RemoteDataHandlerVerticle");
-        sl.vertx.undeploy("com.rodellison.serverless.handlers.EventHandlerVerticle");
+        sl.vertx.undeploy(DBHandlerVerticle.class.getName());
+        sl.vertx.undeploy(DataExtractorHandlerVerticle.class.getName());
+        sl.vertx.undeploy(RemoteDataHandlerVerticle.class.getName());
+        sl.vertx.undeploy(EventHandlerVerticle.class.getName());
         sl = null;
-
-
     }
 
 

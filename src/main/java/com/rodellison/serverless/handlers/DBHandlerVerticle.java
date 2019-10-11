@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class DBHandlerVerticle extends AbstractVerticle {
 
@@ -34,7 +35,7 @@ public class DBHandlerVerticle extends AbstractVerticle {
         eventBus.consumer(Services.GETDBDATA.toString(), message -> {
             // Do something with Vert.x async, reactive APIs
 
-            executeLongRunningBlockingOperation();
+      //      executeLongRunningBlockingOperation();
 
             final Map<String, Object> response = new HashMap<>();
 

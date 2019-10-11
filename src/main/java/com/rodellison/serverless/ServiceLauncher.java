@@ -1,53 +1,68 @@
 package com.rodellison.serverless;
 
-
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
+import com.rodellison.serverless.handlers.DBHandlerVerticle;
+import com.rodellison.serverless.handlers.DataExtractorHandlerVerticle;
+import com.rodellison.serverless.handlers.EventHandlerVerticle;
+import com.rodellison.serverless.handlers.RemoteDataHandlerVerticle;
+import io.vertx.core.*;
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.concurrent.*;
+
+import static io.vertx.core.impl.CompositeFutureImpl.join;
 
 public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiGatewayResponse>{
 
     private static final Logger logger = Logger.getLogger(ServiceLauncher.class);
     public Vertx vertx;
     {
-        System.setProperty("vertx.disableFileCPResolving", "true");
-
         VertxOptions vertxOptions = new VertxOptions()
                 .setBlockedThreadCheckInterval(5000);
         vertx = Vertx.vertx(vertxOptions);
 
-        DeploymentOptions standardDeploymentOptions = new DeploymentOptions();
         final int instanceCount = Runtime.getRuntime().availableProcessors();
         logger.info("Starting Service launcher and setting instances to: " + instanceCount);
-        standardDeploymentOptions.setInstances(instanceCount);
 
-        final List<String> standardVerticles = Arrays.asList(
-                "com.rodellison.serverless.handlers.EventHandlerVerticle",
-                "com.rodellison.serverless.handlers.DataExtractorHandlerVerticle",
-                "com.rodellison.serverless.handlers.RemoteDataHandlerVerticle",
-                "com.rodellison.serverless.handlers.DBHandlerVerticle"
+        DeploymentOptions standardDeploymentOptions = new DeploymentOptions()
+                .setInstances(instanceCount);;
+        DeploymentOptions workerDeploymentOptions = new DeploymentOptions()
+                .setWorker(true);
+
+        CompletableFuture.allOf(
+
+                deploy(RemoteDataHandlerVerticle.class.getName(), workerDeploymentOptions),
+                deploy(DataExtractorHandlerVerticle.class.getName(), workerDeploymentOptions),
+                deploy(DBHandlerVerticle.class.getName(), workerDeploymentOptions),
+                deploy(EventHandlerVerticle.class.getName(), standardDeploymentOptions)
+
         );
+   }
 
-        standardVerticles.stream().forEach(verticle -> vertx.deployVerticle(verticle, standardDeploymentOptions, deployResponse -> {
-            if (deployResponse.failed()) {
-                logger.error("Unable to deploy verticle: " + verticle,
-                        deployResponse.cause());
-            } else {
-                logger.info(verticle + " deployed");
-            }
-        }));
 
-    }
+    private CompletableFuture<Boolean> deploy(String name, DeploymentOptions opts) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<Boolean>();
+
+        CompletableFuture.supplyAsync(() ->{
+                vertx.deployVerticle(name, opts, res -> {
+                    if (res.failed()) {
+                        logger.error("Failed to deploy verticle " + name);
+                        cf.complete(false);
+                    } else {
+                        logger.info("Deployed verticle " + name);
+                        cf.complete(true);
+                    }
+                });
+                return null;
+        });
+        return cf;
+
+    };
 
     @Override
     public ApiGatewayResponse handleRequest(Map<String, Object> map, Context context) {
