@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestGetDataHandler {
+public class TestDataHandler {
 
-    private final Logger logger = Logger.getLogger(TestGetDataHandler.class);
+    private final Logger logger = Logger.getLogger(TestDataHandler.class);
     private static ServiceLauncher sl;
     private Context testContext;
 
@@ -30,22 +30,35 @@ public class TestGetDataHandler {
 
     @Test
     @Order(1)
-    public void testGetRemoteDataHandlerReturnsSuccess2() throws Throwable {
+    public void testLoadDataReturnsSuccess() throws Throwable {
 
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "GET");
-        map.put("resource", "/data");
+        map.put("resource", "/loaddata/{yearmonth}");
+        map.put("pathParameters", "{yearmonth=201910}");
 
         ApiGatewayResponse theAPIGateWayResponse1, theAPIGateWayResponse2;
 
-        logger.info("Test RemoteDataHandlerVerticle responds for GET:/data");
+        logger.info("Test RemoteDataHandlerVerticle responds for GET:/loaddata/{yearmonth}");
         theAPIGateWayResponse1 = sl.handleRequest(map, testContext);
-   //     theAPIGateWayResponse2 = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse1.getBody().contains("Received GET:/data"));
-   //     Assert.assertTrue(theAPIGateWayResponse2.getBody().contains("Received GET:/data"));
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ie) {        }
+        Assert.assertTrue(theAPIGateWayResponse1.getBody().contains("Received GET:/loaddata/{yearmonth}"));
+
+    }
+
+    @Test
+    @Order(2)
+    public void testGetDataReturnsSuccess() throws Throwable {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("httpMethod", "GET");
+        map.put("resource", "/data/{yearmonth}");
+        map.put("pathParameters", "{yearmonth=201910}");
+
+        ApiGatewayResponse theAPIGateWayResponse1, theAPIGateWayResponse2;
+
+        logger.info("Test RemoteDataHandlerVerticle responds for GET:/data/{yearmonth}");
+        theAPIGateWayResponse1 = sl.handleRequest(map, testContext);
+        Assert.assertTrue(theAPIGateWayResponse1.getBody().contains("Received GET:/data/{yearmonth}"));
 
     }
 
@@ -53,14 +66,11 @@ public class TestGetDataHandler {
     public static void tearDown()
     {
 
-
-
         sl.vertx.undeploy("com.rodellison.serverless.handlers.DBHandlerVerticle");
         sl.vertx.undeploy("com.rodellison.serverless.handlers.DataExtratorHandlerVerticle");
         sl.vertx.undeploy("com.rodellison.serverless.handlers.RemoteDataHandlerVerticle");
         sl.vertx.undeploy("com.rodellison.serverless.handlers.EventHandlerVerticle");
         sl = null;
-
 
     }
 

@@ -36,8 +36,13 @@ Resources:
           Properties:
             Path: /users/{id}
             Method: POST
-        Api4:
+        Api5:
           Type: Api
           Properties:
-            Path: /data
+            Path: /data/{yearmonth}
+            Method: GET
+        Api6:
+          Type: Api
+            Properties:
+            Path: /loaddata/{yearmonth}
             Method: GET

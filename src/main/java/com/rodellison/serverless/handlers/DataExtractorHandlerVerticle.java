@@ -10,9 +10,6 @@ import org.apache.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by lbulic on 10/19/17.
- */
 public class DataExtractorHandlerVerticle extends AbstractVerticle {
 
     private static final Logger logger = Logger.getLogger(DataExtractorHandlerVerticle.class);
@@ -24,20 +21,15 @@ public class DataExtractorHandlerVerticle extends AbstractVerticle {
 
         eventBus.consumer(Services.EXTRACTWEBDATA.toString(), message -> {
             // Do something with Vert.x async, reactive APIs
+            JsonObject dataToExtract = JsonObject.mapFrom(message.body());
+            logger.info("DataExtracterHandlerVerticle received request: " + dataToExtract.getValue("body"));
 
-            logger.info("DataExtracterHandler received request");
-            JsonObject theMessageObject = (JsonObject)message.body();
+            //call function to extract and parse here, should be pretty quick
 
-            //From here, after obtaining the Data, we'd send the html over to the DataExtractHandler for processing
-            Map<String, Object> theDataToExtract = new HashMap<>();
-            theDataToExtract.put("html_item_body", "the html item body content");
-            eventBus.send(Services.INSERTDBDATA.toString(), new JsonObject(theDataToExtract));  //fire forget as this service will eventually send on to DBHandlerVerticle
-
-            logger.info("DataExtracterHandler processed request");
-
-//            final Map<String, Object> response = new HashMap<>();
-//            response.put("body", "DataExtracterHandler processed request");
-//            message.reply(new JsonObject(response).encode());
+             logger.info("DataExtracterHandlerVerticle processed request");
+            final Map<String, Object> response = new HashMap<>();
+            response.put("body", "...a set of JSON items");
+            message.reply(new JsonObject(response));
 
         });
 

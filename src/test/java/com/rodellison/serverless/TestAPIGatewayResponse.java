@@ -1,21 +1,12 @@
 package com.rodellison.serverless;
 
-import com.amazonaws.services.lambda.runtime.ClientContext;
-import com.amazonaws.services.lambda.runtime.CognitoIdentity;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
+
 import io.vertx.core.json.JsonObject;
 import org.junit.Assert;
 import org.apache.log4j.Logger;
-import org.junit.Assert.*;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.*;
-import org.junit.runners.MethodSorters;
 
-import java.io.IOException;
 import java.util.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

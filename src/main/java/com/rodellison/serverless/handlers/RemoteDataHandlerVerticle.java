@@ -5,15 +5,13 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by lbulic on 10/19/17.
- */
 public class RemoteDataHandlerVerticle extends AbstractVerticle {
 
     private static final Logger logger = Logger.getLogger(RemoteDataHandlerVerticle.class);
@@ -36,17 +34,18 @@ public class RemoteDataHandlerVerticle extends AbstractVerticle {
         eventBus.consumer(Services.FETCHWEBDATA.toString(),message -> {
             // Do something with Vert.x async, reactive APIs
 
+            final Message<Object> theMessage = message;
+            String theMessagePathParm = (String) theMessage.body();
+            logger.info("RemoteDataHandlerVerticle received request with parm: " + theMessagePathParm);
+
             executeLongRunningBlockingOperation();
 
-            //From here, after obtaining the Data, we'd send the html over to the DataExtractHandler for processing
-            Map<String, Object> theDataToExtract = new HashMap<>();
-            theDataToExtract.put("html_item_body", "the html item body content");
-            eventBus.send(Services.EXTRACTWEBDATA.toString(), new JsonObject(theDataToExtract));  //fire forget as this service will eventually send on to DBHandlerVerticle
-
+            logger.info("RemoteDataHandlerVerticle processed request");
 
             final Map<String, Object> response = new HashMap<>();
-            response.put("body", "RemoteDataHandlerVerticle processed request");
-            message.reply(new JsonObject(response).encode());
+            response.put("body", "...RemoteDataHandler fetched HTML...");
+            message.reply(new JsonObject(response));
+
         });
 
         startPromise.complete();

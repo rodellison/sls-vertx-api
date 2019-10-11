@@ -13,9 +13,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-/**
- * Created by lbulic on 10/19/17.
- */
 public class DBHandlerVerticle extends AbstractVerticle {
 
     private static final Logger logger = Logger.getLogger(DBHandlerVerticle.class);
@@ -23,7 +20,7 @@ public class DBHandlerVerticle extends AbstractVerticle {
     public void executeLongRunningBlockingOperation() {
         try {
             logger.info("Executing long running simulation in DBHandlerVerticle");
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException ie) {
 
         }
@@ -50,20 +47,17 @@ public class DBHandlerVerticle extends AbstractVerticle {
         eventBus.consumer(Services.INSERTDBDATA.toString(), message -> {
             // Do something with Vert.x async, reactive APIs
 
-            logger.info("DBHandler received Insert request");
+            JsonObject dbItemsToInsert = JsonObject.mapFrom(message.body());
+            logger.info("DBHandlerVerticle received Insert request: " + dbItemsToInsert.getValue("body"));
 
-            // possible long running execution to insert against a remote database
-            vertx.executeBlocking(execBlockFuture -> {
+            executeLongRunningBlockingOperation();
 
-                executeLongRunningBlockingOperation();
+            logger.info("DataExtracterHandlerVerticle processed request");
+            final Map<String, Object> response = new HashMap<>();
+            response.put("body", "...database updated");
+            message.reply(new JsonObject(response));
 
-                execBlockFuture.complete();
-
-            }, res -> {
-                logger.info("DBHandler processed Insert request");
-            });
-
-         });
+        });
 
         startPromise.complete();
     }

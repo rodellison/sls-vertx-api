@@ -1,10 +1,7 @@
 package com.rodellison.serverless.handlers;
 
-import com.rodellison.serverless.ApiGatewayResponse;
-import com.rodellison.serverless.Response;
 import com.rodellison.serverless.Services;
 import io.vertx.core.*;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
@@ -14,12 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-/**
- * Created by lbulic on 10/19/17.
- */
+
 public class EventHandlerVerticle extends AbstractVerticle {
 
     private static final Logger logger = Logger.getLogger(EventHandlerVerticle.class);
@@ -28,18 +21,19 @@ public class EventHandlerVerticle extends AbstractVerticle {
     public void start(Promise<Void> startPromise) {
         final EventBus eventBus = vertx.eventBus();
 
-        eventBus.consumer("GET:/data", message -> {
+        eventBus.consumer("GET:/loaddata/{yearmonth}", message -> {
 
-            logger.info("GET:/data function invoked");
+            final Message<Object> theMessage = message;
+            String theMessagePathParm = (String) theMessage.body();
+
+            logger.info("GET:/loaddata/{yearmonth} function invoked with parm: " + theMessagePathParm);
 
             //Calling out to an external web page to get data could take time, trying executeBlocking here
             vertx.<String>executeBlocking(execBlockFuture -> {
-                JsonObject jsObj = new JsonObject();
-                jsObj.put("message", "remotedatahandler");
                 final CompletableFuture<String> remoteDataHandlerFuture = new CompletableFuture<String>();
 
-                eventBus.request(Services.FETCHWEBDATA.toString(),jsObj.encode(), rs -> {
-                    if(rs.succeeded()) {
+                eventBus.request(Services.FETCHWEBDATA.toString(), theMessagePathParm, rs -> {
+                    if (rs.succeeded()) {
                         logger.info("RemoteDataHandler: SUCCESS");
                         remoteDataHandlerFuture.complete(rs.result().body().toString());
                     } else {
@@ -54,16 +48,118 @@ public class EventHandlerVerticle extends AbstractVerticle {
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                     RemoteDataHandlerResult = e.getMessage();
-                 }
+                }
 
                 execBlockFuture.complete(RemoteDataHandlerResult);
 
+            }, resFetch -> {
+
+                logger.info(resFetch.result());
+                JsonObject fetchResult = new JsonObject(resFetch.result());
+
+                //Calling out to an external web page to get data could take time, trying executeBlocking here
+                vertx.<String>executeBlocking(execBlockFuture -> {
+                    final CompletableFuture<String> dataExtractHandlerFuture = new CompletableFuture<String>();
+
+                    eventBus.request(Services.EXTRACTWEBDATA.toString(), fetchResult, rs -> {
+                        if (rs.succeeded()) {
+                            logger.info("DataExtractHandler: SUCCESS");
+                            dataExtractHandlerFuture.complete(rs.result().body().toString());
+                        } else {
+                            logger.info("DataExtractHandler: FAILED");
+                            dataExtractHandlerFuture.complete(rs.cause().getMessage());
+                        }
+                    });
+
+                    String DataExtractHandlerResult = "";
+                    try {
+                        DataExtractHandlerResult = dataExtractHandlerFuture.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                        DataExtractHandlerResult = e.getMessage();
+                    }
+
+                    execBlockFuture.complete(DataExtractHandlerResult);
+
+                }, resExtract -> {
+
+                    logger.info(resExtract.result());
+                    JsonObject extractResult = new JsonObject(resExtract.result());
+                    //Calling out to an external web page to get data could take time, trying executeBlocking here
+                    vertx.<String>executeBlocking(execBlockFuture -> {
+                        final CompletableFuture<String> dbHandlerFuture = new CompletableFuture<String>();
+
+                        eventBus.request(Services.INSERTDBDATA.toString(), extractResult, rs -> {
+                            if (rs.succeeded()) {
+                                logger.info("DataExtractHandler: SUCCESS");
+                                dbHandlerFuture.complete(rs.result().body().toString());
+                            } else {
+                                logger.info("DataExtractHandler: FAILED");
+                                dbHandlerFuture.complete(rs.cause().getMessage());
+                            }
+                        });
+
+                        String dbHandlerResult = "";
+                        try {
+                            dbHandlerResult = dbHandlerFuture.get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                            dbHandlerResult = e.getMessage();
+                        }
+
+                        execBlockFuture.complete(dbHandlerResult);
+
+                    }, resDB -> {
+
+                        final Map<String, Object> response = new HashMap<>();
+                        response.put("statusCode", 200);
+                        response.put("body", "Received GET:/loaddata/{yearmonth}, result: " + resExtract.result());
+                        message.reply(new JsonObject(response).encode());
+                    });
+                });
+
+            });
+
+        });
+
+        eventBus.consumer("GET:/data/{yearmonth}", message -> {
+
+            final Message<Object> theMessage = message;
+            String theMessagePathParm = (String) theMessage.body();
+
+            logger.info("GET:/data/{yearmonth} function invoked with parm: " + theMessagePathParm);
+
+            //Calling out to an external web page to get data could take time, trying executeBlocking here
+            vertx.<String>executeBlocking(execBlockFuture -> {
+                final CompletableFuture<String> remoteDataHandlerFuture = new CompletableFuture<String>();
+
+                eventBus.request(Services.GETDBDATA.toString(), theMessagePathParm, rs -> {
+                    if (rs.succeeded()) {
+                        logger.info("DBHandler: SUCCESS");
+                        remoteDataHandlerFuture.complete(rs.result().body().toString());
+                    } else {
+                        logger.info("DBHandler: FAILED");
+                        remoteDataHandlerFuture.complete(rs.cause().getMessage());
+                    }
+                });
+
+                String DBHandlerResult = "";
+                try {
+                    DBHandlerResult = remoteDataHandlerFuture.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                    DBHandlerResult = e.getMessage();
+                }
+
+                execBlockFuture.complete(DBHandlerResult);
+
             }, res -> {
-                    logger.info("GET:/data function handled");
-                    final Map<String, Object> response = new HashMap<>();
-                    response.put("statusCode", 200);
-                    response.put("body", "Received GET:/data, result: " + res.result());
-                    message.reply(new JsonObject(response).encode());
+
+                final Map<String, Object> response = new HashMap<>();
+                response.put("statusCode", 200);
+                response.put("body", "Received GET:/data/{yearmonth}, result: " + res.result());
+                message.reply(new JsonObject(response).encode());
+
             });
         });
 

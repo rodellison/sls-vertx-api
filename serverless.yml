@@ -33,5 +33,12 @@ functions:
           path: users/{id}
           method: delete
           cors: true
-
+      - http:
+          path: data/{yearmonth}
+          method: get
+          cors: true
+      - http:
+          path: loaddata/{yearmonth}
+          method: get
+          cors: true
 

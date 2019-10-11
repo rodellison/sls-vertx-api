@@ -23,22 +23,22 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
         System.setProperty("vertx.disableFileCPResolving", "true");
 
         VertxOptions vertxOptions = new VertxOptions()
-                .setBlockedThreadCheckInterval(2000);
+                .setBlockedThreadCheckInterval(5000);
         vertx = Vertx.vertx(vertxOptions);
 
-        DeploymentOptions deploymentOptions = new DeploymentOptions();
+        DeploymentOptions standardDeploymentOptions = new DeploymentOptions();
         final int instanceCount = Runtime.getRuntime().availableProcessors();
         logger.info("Starting Service launcher and setting instances to: " + instanceCount);
-        deploymentOptions.setInstances(instanceCount);
+        standardDeploymentOptions.setInstances(instanceCount);
 
-        final List<String> verticles = Arrays.asList(
+        final List<String> standardVerticles = Arrays.asList(
                 "com.rodellison.serverless.handlers.EventHandlerVerticle",
-                "com.rodellison.serverless.handlers.RemoteDataHandlerVerticle",
                 "com.rodellison.serverless.handlers.DataExtractorHandlerVerticle",
+                "com.rodellison.serverless.handlers.RemoteDataHandlerVerticle",
                 "com.rodellison.serverless.handlers.DBHandlerVerticle"
         );
 
-        verticles.stream().forEach(verticle -> vertx.deployVerticle(verticle, deploymentOptions, deployResponse -> {
+        standardVerticles.stream().forEach(verticle -> vertx.deployVerticle(verticle, standardDeploymentOptions, deployResponse -> {
             if (deployResponse.failed()) {
                 logger.error("Unable to deploy verticle: " + verticle,
                         deployResponse.cause());
@@ -46,6 +46,7 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
                 logger.info(verticle + " deployed");
             }
         }));
+
     }
 
     @Override
@@ -53,7 +54,8 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
 
         final CompletableFuture<String> future = new CompletableFuture<String>();
 
-        vertx.eventBus().request(map.get("httpMethod").toString() + ":" + map.get("resource"), new JsonObject(map).encode(), rs -> {
+        logger.info(map);
+        vertx.eventBus().request(map.get("httpMethod").toString() + ":" + map.get("resource"), map.get("pathParameters"), rs -> {
             if(rs.succeeded()) {
                 logger.info("ServiceLauncher::handleRequest: SUCCESS");
                 logger.info(rs.result().body());
