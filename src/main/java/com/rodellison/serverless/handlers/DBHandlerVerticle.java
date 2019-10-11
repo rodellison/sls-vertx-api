@@ -39,7 +39,7 @@ public class DBHandlerVerticle extends AbstractVerticle {
             final Map<String, Object> response = new HashMap<>();
 
             response.put("statusCode", 200);
-            response.put("body", "DBHandlerVerticle Get DB Data processed request");
+            response.put("body", "...DBHandlerVerticle JSON data...");
 
             message.reply(new JsonObject(response).encode());
         });
@@ -48,11 +48,11 @@ public class DBHandlerVerticle extends AbstractVerticle {
             // Do something with Vert.x async, reactive APIs
 
             JsonObject dbItemsToInsert = JsonObject.mapFrom(message.body());
-            logger.info("DBHandlerVerticle received Insert request: " + dbItemsToInsert.getValue("body"));
+            logger.debug("DBHandlerVerticle received Insert request: " + dbItemsToInsert.getValue("body"));
 
             executeLongRunningBlockingOperation();
 
-            logger.info("DBHandlerVerticle processed request");
+            logger.debug("DBHandlerVerticle processed request");
             final Map<String, Object> response = new HashMap<>();
             response.put("body", "...database updated");
             message.reply(new JsonObject(response));

@@ -55,7 +55,7 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
             }, resFetch -> {
 
-                logger.info(resFetch.result());
+                logger.debug(resFetch.result());
                 JsonObject fetchResult = new JsonObject(resFetch.result());
 
                 //Calling out to an external web page to get data could take time, trying executeBlocking here
@@ -84,7 +84,7 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
                 }, resExtract -> {
 
-                    logger.info(resExtract.result());
+                    logger.debug(resExtract.result());
                     JsonObject extractResult = new JsonObject(resExtract.result());
                     //Calling out to an external web page to get data could take time, trying executeBlocking here
                     vertx.<String>executeBlocking(execBlockFuture -> {
@@ -114,7 +114,7 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
                         final Map<String, Object> response = new HashMap<>();
                         response.put("statusCode", 200);
-                        response.put("body", "Received GET:/loaddata/{yearmonth}, result: " + resDB.result());
+                        response.put("body", "Received GET:/loaddata/{yearmonth}, result: DB Updated");
                         message.reply(new JsonObject(response).encode());
                     });
                 });
@@ -158,7 +158,7 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
                 final Map<String, Object> response = new HashMap<>();
                 response.put("statusCode", 200);
-                response.put("body", "Received GET:/data/{yearmonth}, result: " + res.result());
+                response.put("body", res.result());
                 message.reply(new JsonObject(response).encode());
 
             });

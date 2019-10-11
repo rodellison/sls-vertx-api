@@ -36,11 +36,11 @@ public class RemoteDataHandlerVerticle extends AbstractVerticle {
 
             final Message<Object> theMessage = message;
             String theMessagePathParm = (String) theMessage.body();
-            logger.info("RemoteDataHandlerVerticle received request with parm: " + theMessagePathParm);
+            logger.debug("RemoteDataHandlerVerticle received request with parm: " + theMessagePathParm);
 
             executeLongRunningBlockingOperation();
 
-            logger.info("RemoteDataHandlerVerticle processed request");
+            logger.debug("RemoteDataHandlerVerticle processed request");
 
             final Map<String, Object> response = new HashMap<>();
             response.put("body", "...RemoteDataHandler fetched HTML...");

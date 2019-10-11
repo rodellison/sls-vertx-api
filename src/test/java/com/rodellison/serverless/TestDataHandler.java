@@ -58,7 +58,7 @@ public class TestDataHandler {
 
         logger.info("Test RemoteDataHandlerVerticle responds for GET:/data/{yearmonth}");
         theAPIGateWayResponse1 = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse1.getBody().contains("Received GET:/data/{yearmonth}"));
+        Assert.assertTrue(theAPIGateWayResponse1.getBody().contains("DBHandlerVerticle JSON data"));
 
     }
 

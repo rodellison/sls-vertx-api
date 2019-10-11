@@ -58,11 +58,11 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
         vertx.eventBus().request(map.get("httpMethod").toString() + ":" + map.get("resource"), new JsonObject(map).encode(), rs -> {
             if(rs.succeeded()) {
                 logger.info("ServiceLauncher::handleRequest: SUCCESS");
-                logger.info(rs.result().body());
+                logger.debug(rs.result().body());
                 future.complete(rs.result().body().toString());
             } else {
                 logger.info("ServiceLauncher::handleRequest: FAILED");
-                logger.info(rs.cause().getMessage());
+                logger.error(rs.cause().getMessage());
                 future.complete(rs.cause().getMessage());
             }
         });

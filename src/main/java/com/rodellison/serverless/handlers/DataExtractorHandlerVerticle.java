@@ -22,11 +22,11 @@ public class DataExtractorHandlerVerticle extends AbstractVerticle {
         eventBus.consumer(Services.EXTRACTWEBDATA.toString(), message -> {
             // Do something with Vert.x async, reactive APIs
             JsonObject dataToExtract = JsonObject.mapFrom(message.body());
-            logger.info("DataExtracterHandlerVerticle received request: " + dataToExtract.getValue("body"));
+            logger.debug("DataExtracterHandlerVerticle received request: " + dataToExtract.getValue("body"));
 
             //call function to extract and parse here, should be pretty quick
 
-             logger.info("DataExtracterHandlerVerticle processed request");
+            logger.debug("DataExtracterHandlerVerticle processed request");
             final Map<String, Object> response = new HashMap<>();
             response.put("body", "...a set of JSON items");
             message.reply(new JsonObject(response));
