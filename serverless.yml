@@ -1,5 +1,5 @@
 
-service: floridakeys-api # NOTE: update this with your service name
+service: sls-vertx-api # NOTE: update this with your service name
 
 provider:
   name: aws
@@ -7,11 +7,11 @@ provider:
 
 # you can add packaging information here
 package:
-  artifact: target/floridakeys-api-dev.jar
+  artifact: target/sls-vertx-api-dev.jar
 
 functions:
   users:
-    handler: com.rodellison.serverless.ServiceLauncher
+    handler: sls.vertx.api.ServiceLauncher
     events:
       - http:
           path: users

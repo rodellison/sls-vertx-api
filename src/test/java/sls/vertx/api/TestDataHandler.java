@@ -1,7 +1,10 @@
-package com.rodellison.serverless;
+package sls.vertx.api;
 
-import com.rodellison.serverless.handlers.*;
 import com.amazonaws.services.lambda.runtime.Context;
+import sls.vertx.api.handlers.DataBaseVerticle;
+import sls.vertx.api.handlers.DataExtractorVerticle;
+import sls.vertx.api.handlers.EventHubVerticle;
+import sls.vertx.api.handlers.RemoteDataFetchVerticle;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -103,10 +106,10 @@ public class TestDataHandler {
     @AfterAll
     public static void tearDown()
     {
-        sl.vertx.undeploy(DBHandlerVerticle.class.getName());
-        sl.vertx.undeploy(DataExtractorHandlerVerticle.class.getName());
-        sl.vertx.undeploy(RemoteDataHandlerVerticle.class.getName());
-        sl.vertx.undeploy(EventHandlerVerticle.class.getName());
+        sl.vertx.undeploy(DataBaseVerticle.class.getName());
+        sl.vertx.undeploy(DataExtractorVerticle.class.getName());
+        sl.vertx.undeploy(RemoteDataFetchVerticle.class.getName());
+        sl.vertx.undeploy(EventHubVerticle.class.getName());
         sl = null;
     }
 

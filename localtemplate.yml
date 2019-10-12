@@ -10,11 +10,11 @@ Resources:
   FloridaKeysAPI:
     Type: AWS::Serverless::Function
     Properties: 
-      FunctionName: FloridaKeysAPI
+      FunctionName: Sls-Vertx-Api
       Runtime: java8
       Timeout: 60
-      CodeUri: target/floridakeys-api-dev
-      Handler: com.rodellison.serverless.ServiceLauncher::handleRequest
+      CodeUri: target/sls-vertx-api-dev
+      Handler: sls.vertx.api.ServiceLauncher::handleRequest
       Events: 
         Api: 
           Type: Api

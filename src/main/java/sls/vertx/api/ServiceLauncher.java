@@ -1,11 +1,11 @@
-package com.rodellison.serverless;
+package sls.vertx.api;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.rodellison.serverless.handlers.DBHandlerVerticle;
-import com.rodellison.serverless.handlers.DataExtractorHandlerVerticle;
-import com.rodellison.serverless.handlers.EventHandlerVerticle;
-import com.rodellison.serverless.handlers.RemoteDataHandlerVerticle;
+import sls.vertx.api.handlers.DataBaseVerticle;
+import sls.vertx.api.handlers.DataExtractorVerticle;
+import sls.vertx.api.handlers.EventHubVerticle;
+import sls.vertx.api.handlers.RemoteDataFetchVerticle;
 import io.vertx.core.*;
 import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
@@ -29,15 +29,17 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
         DeploymentOptions standardDeploymentOptions = new DeploymentOptions()
                 .setInstances(instanceCount);
 
-        DeploymentOptions workerDeploymentOptions = new DeploymentOptions()
-                .setWorker(true);
+//        DeploymentOptions workerDeploymentOptions = new DeploymentOptions()
+//                .setWorkerPoolName("data-processing-pool")
+//                .setWorkerPoolSize(instanceCount)
+//                .setWorker(true);
 
         CompletableFuture.allOf(
 
-                deploy(RemoteDataHandlerVerticle.class.getName(), standardDeploymentOptions),
-                deploy(DBHandlerVerticle.class.getName(), standardDeploymentOptions),
-                deploy(DataExtractorHandlerVerticle.class.getName(), standardDeploymentOptions),
-                deploy(EventHandlerVerticle.class.getName(), standardDeploymentOptions)
+                deploy(RemoteDataFetchVerticle.class.getName(), standardDeploymentOptions),
+                deploy(DataBaseVerticle.class.getName(), standardDeploymentOptions),
+                deploy(DataExtractorVerticle.class.getName(), standardDeploymentOptions),
+                deploy(EventHubVerticle.class.getName(), standardDeploymentOptions)
 
         ).whenComplete((nada, thrown) -> {
             logger.info("Deploy verticles complete.");

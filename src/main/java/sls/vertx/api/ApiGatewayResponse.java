@@ -1,4 +1,4 @@
-package com.rodellison.serverless;
+package sls.vertx.api;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

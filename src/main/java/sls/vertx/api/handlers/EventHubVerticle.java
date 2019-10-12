@@ -1,9 +1,8 @@
-package com.rodellison.serverless.handlers;
+package sls.vertx.api.handlers;
 
-import com.rodellison.serverless.Services;
+import sls.vertx.api.Services;
 import io.vertx.core.*;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 
@@ -11,12 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 
-public class EventHandlerVerticle extends AbstractVerticle {
+public class EventHubVerticle extends AbstractVerticle {
 
-    private static final Logger logger = Logger.getLogger(EventHandlerVerticle.class);
+    private static final Logger logger = Logger.getLogger(EventHubVerticle.class);
 
     @Override
     public void start(Promise<Void> startPromise) {

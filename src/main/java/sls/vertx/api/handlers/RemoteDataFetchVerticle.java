@@ -1,20 +1,18 @@
-package com.rodellison.serverless.handlers;
+package sls.vertx.api.handlers;
 
-import com.rodellison.serverless.Services;
+import sls.vertx.api.Services;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RemoteDataHandlerVerticle extends AbstractVerticle {
+public class RemoteDataFetchVerticle extends AbstractVerticle {
 
-    private static final Logger logger = Logger.getLogger(RemoteDataHandlerVerticle.class);
+    private static final Logger logger = Logger.getLogger(RemoteDataFetchVerticle.class);
 
     public void executeLongRunningBlockingOperation() {
         try {

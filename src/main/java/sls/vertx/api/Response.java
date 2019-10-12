@@ -1,4 +1,4 @@
-package com.rodellison.serverless;
+package sls.vertx.api;
 
 import java.util.Map;
 

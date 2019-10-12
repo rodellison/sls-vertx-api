@@ -1,6 +1,6 @@
-package com.rodellison.serverless.handlers;
+package sls.vertx.api.handlers;
 
-import com.rodellison.serverless.Services;
+import sls.vertx.api.Services;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataExtractorHandlerVerticle extends AbstractVerticle {
+public class DataExtractorVerticle extends AbstractVerticle {
 
-    private static final Logger logger = Logger.getLogger(DataExtractorHandlerVerticle.class);
+    private static final Logger logger = Logger.getLogger(DataExtractorVerticle.class);
 
     public void executeLongRunningBlockingOperation() {
         try {

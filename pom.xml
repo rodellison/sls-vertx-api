@@ -2,10 +2,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.rodellison</groupId>
-    <artifactId>floridakeys-api</artifactId>
+    <artifactId>sls-vertx-api</artifactId>
     <packaging>jar</packaging>
     <version>dev</version>
-    <name>floridakeys-api</name>
+    <name>sls-vertx-api</name>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
