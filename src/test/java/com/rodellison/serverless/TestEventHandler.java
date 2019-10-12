@@ -32,7 +32,7 @@ public class TestEventHandler {
         try
         {
             //Just waiting one second for verticles to get up, before running tests
-            Thread.sleep(1000);
+            Thread.sleep(500);
 
         } catch (InterruptedException ie)
         {

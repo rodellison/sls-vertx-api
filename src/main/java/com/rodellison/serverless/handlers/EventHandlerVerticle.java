@@ -26,7 +26,7 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
             String theMessage = message.body().toString();
             JsonObject messageJson = new JsonObject(theMessage);
-            String theMessagePathParm = messageJson.getValue("pathParameters").toString();
+            String theMessagePathParm = messageJson.getValue("path").toString();
 
             logger.info("GET:/loaddata/{yearmonth} function invoked with parm: " + theMessagePathParm);
 
@@ -34,7 +34,7 @@ public class EventHandlerVerticle extends AbstractVerticle {
             vertx.<String>executeBlocking(execBlockFuture -> {
                 final CompletableFuture<String> remoteDataHandlerFuture = new CompletableFuture<String>();
 
-                eventBus.request(Services.FETCHWEBDATA.toString(), theMessagePathParm, rs -> {
+                eventBus.request(Services.FETCHWEBDATA.toString(), messageJson, rs -> {
                     if (rs.succeeded()) {
                         logger.info("RemoteDataHandler: SUCCESS");
                         remoteDataHandlerFuture.complete(rs.result().body().toString());
@@ -115,6 +115,7 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
                         final Map<String, Object> response = new HashMap<>();
                         response.put("statusCode", 200);
+                        response.put("path", theMessagePathParm);
                         response.put("body", "Received GET:/loaddata/{yearmonth}, result: DB Updated");
                         message.reply(new JsonObject(response).encode());
                     });
@@ -126,8 +127,9 @@ public class EventHandlerVerticle extends AbstractVerticle {
 
         eventBus.consumer("GET:/data/{yearmonth}", message -> {
 
-            final Message<Object> theMessage = message;
-            String theMessagePathParm = (String) theMessage.body();
+            String theMessage = message.body().toString();
+            JsonObject messageJson = new JsonObject(theMessage);
+            String theMessagePathParm = messageJson.getValue("path").toString();
 
             logger.info("GET:/data/{yearmonth} function invoked with parm: " + theMessagePathParm);
 
@@ -135,7 +137,7 @@ public class EventHandlerVerticle extends AbstractVerticle {
             vertx.<String>executeBlocking(execBlockFuture -> {
                 final CompletableFuture<String> remoteDataHandlerFuture = new CompletableFuture<String>();
 
-                eventBus.request(Services.GETDBDATA.toString(), theMessagePathParm, rs -> {
+                eventBus.request(Services.GETDBDATA.toString(), messageJson , rs -> {
                     if (rs.succeeded()) {
                         logger.info("DBHandler: SUCCESS");
                         remoteDataHandlerFuture.complete(rs.result().body().toString());

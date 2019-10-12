@@ -35,12 +35,18 @@ public class DBHandlerVerticle extends AbstractVerticle {
         eventBus.consumer(Services.GETDBDATA.toString(), message -> {
             // Do something with Vert.x async, reactive APIs
 
-      //      executeLongRunningBlockingOperation();
+            JsonObject dbItemsToGet = JsonObject.mapFrom(message.body());
+             String theMessagePathParm = dbItemsToGet.getValue("path").toString();
+
+            logger.info("DBHandlerVerticle received Get request: " + dbItemsToGet.getValue("path"));
+            executeLongRunningBlockingOperation();
+            logger.info("DBHandlerVerticle processed Get request: " + dbItemsToGet.getValue("path"));
 
             final Map<String, Object> response = new HashMap<>();
 
             response.put("statusCode", 200);
-            response.put("body", "...DBHandlerVerticle JSON data...");
+            response.put("path", theMessagePathParm);
+            response.put("body", "...database get completed for: " + theMessagePathParm);
 
             message.reply(new JsonObject(response).encode());
         });
@@ -48,14 +54,16 @@ public class DBHandlerVerticle extends AbstractVerticle {
         eventBus.consumer(Services.INSERTDBDATA.toString(), message -> {
             // Do something with Vert.x async, reactive APIs
 
-            JsonObject dbItemsToInsert = JsonObject.mapFrom(message.body());
-            logger.debug("DBHandlerVerticle received Insert request: " + dbItemsToInsert.getValue("body"));
+            JsonObject dbItemToInsert = JsonObject.mapFrom(message.body());
+            String theMessagePathParm = dbItemToInsert.getValue("path").toString();
 
+            logger.info("DBHandlerVerticle received Insert request: " + dbItemToInsert.getValue("path"));
             executeLongRunningBlockingOperation();
+            logger.info("DBHandlerVerticle processed Insert request for: " + theMessagePathParm);
 
-            logger.debug("DBHandlerVerticle processed request");
             final Map<String, Object> response = new HashMap<>();
-            response.put("body", "...database updated");
+            response.put("path", theMessagePathParm);
+            response.put("body", "...database insert completed for: " + theMessagePathParm);
             message.reply(new JsonObject(response));
 
         });

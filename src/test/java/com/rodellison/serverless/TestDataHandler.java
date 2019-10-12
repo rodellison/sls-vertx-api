@@ -14,6 +14,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestDataHandler {
@@ -30,13 +31,12 @@ public class TestDataHandler {
         try
         {
             //Just waiting one second for verticles to get up, before running tests
-            Thread.sleep(1000);
+            Thread.sleep(500);
 
         } catch (InterruptedException ie)
         {
 
         }
-
     }
 
     @Test
@@ -46,13 +46,26 @@ public class TestDataHandler {
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "GET");
         map.put("resource", "/loaddata/{yearmonth}");
-        map.put("pathParameters", "{yearmonth=201910}");
-
-        ApiGatewayResponse theAPIGateWayResponse1, theAPIGateWayResponse2;
+        map.put("path", "/loaddata/201910");
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("httpMethod", "GET");
+        map2.put("resource", "/loaddata/{yearmonth}");
+        map2.put("path", "/loaddata/201911");
 
         logger.info("Test RemoteDataHandlerVerticle responds for GET:/loaddata/{yearmonth}");
-        theAPIGateWayResponse1 = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse1.getBody().contains("Received GET:/loaddata/{yearmonth}"));
+        //running two concurrent requests
+        CompletableFuture<ApiGatewayResponse> cf1 = new CompletableFuture<>();
+        CompletableFuture<ApiGatewayResponse> cf2 = new CompletableFuture<>();
+        CompletableFuture.runAsync(() -> {
+            ApiGatewayResponse api1 = sl.handleRequest(map, testContext);
+            cf1.complete(api1);
+        });
+        CompletableFuture.runAsync(() -> {
+            ApiGatewayResponse api2 = sl.handleRequest(map2, testContext);
+            cf2.complete(api2);
+        });
+        Assert.assertTrue(cf1.get().getBody().contains(map.get("path").toString()));
+        Assert.assertTrue(cf2.get().getBody().contains(map2.get("path").toString()));
 
     }
 
@@ -63,13 +76,27 @@ public class TestDataHandler {
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "GET");
         map.put("resource", "/data/{yearmonth}");
-        map.put("pathParameters", "{yearmonth=201910}");
+        map.put("path", "/data/201910");
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("httpMethod", "GET");
+        map2.put("resource", "/data/{yearmonth}");
+        map2.put("path", "/data/201911");
 
-        ApiGatewayResponse theAPIGateWayResponse1, theAPIGateWayResponse2;
+         logger.info("Test RemoteDataHandlerVerticle responds for GET:/data/{yearmonth}");
+        //running two concurrent requests
+        CompletableFuture<ApiGatewayResponse> cf1 = new CompletableFuture<>();
+        CompletableFuture<ApiGatewayResponse> cf2 = new CompletableFuture<>();
+        CompletableFuture.runAsync(() -> {
+            ApiGatewayResponse api1 = sl.handleRequest(map, testContext);
+            cf1.complete(api1);
+        });
+        CompletableFuture.runAsync(() -> {
+            ApiGatewayResponse api2 = sl.handleRequest(map2, testContext);
+            cf2.complete(api2);
+        });
+        Assert.assertTrue(cf1.get().getBody().contains(map.get("path").toString()));
+        Assert.assertTrue(cf2.get().getBody().contains(map2.get("path").toString()));
 
-        logger.info("Test RemoteDataHandlerVerticle responds for GET:/data/{yearmonth}");
-        theAPIGateWayResponse1 = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse1.getBody().contains("DBHandlerVerticle JSON data"));
 
     }
 

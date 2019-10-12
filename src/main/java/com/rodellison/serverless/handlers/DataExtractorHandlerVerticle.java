@@ -14,6 +14,15 @@ public class DataExtractorHandlerVerticle extends AbstractVerticle {
 
     private static final Logger logger = Logger.getLogger(DataExtractorHandlerVerticle.class);
 
+    public void executeLongRunningBlockingOperation() {
+        try {
+            logger.info("Executing long running simulation in DataExtractorHandlerVerticle");
+            Thread.sleep(500);
+        } catch (InterruptedException ie) {
+
+        }
+
+    }
 
     @Override
     public void start(Promise<Void> startPromise) {
@@ -22,13 +31,16 @@ public class DataExtractorHandlerVerticle extends AbstractVerticle {
         eventBus.consumer(Services.EXTRACTWEBDATA.toString(), message -> {
             // Do something with Vert.x async, reactive APIs
             JsonObject dataToExtract = JsonObject.mapFrom(message.body());
-            logger.debug("DataExtracterHandlerVerticle received request: " + dataToExtract.getValue("body"));
+            String theMessagePathParm = dataToExtract.getValue("path").toString();
+            logger.info("DataExtracterHandlerVerticle received request with parm: " + theMessagePathParm);
 
-            //call function to extract and parse here, should be pretty quick
+            executeLongRunningBlockingOperation();
+            // html to extract is in body, e.g. dataToExtract.getValue("body").toString();
 
-            logger.debug("DataExtracterHandlerVerticle processed request");
+            logger.info("DataExtracterHandlerVerticle processed request for: " + theMessagePathParm);
             final Map<String, Object> response = new HashMap<>();
-            response.put("body", "...a set of JSON items");
+            response.put("path", theMessagePathParm);
+            response.put("body", "...a set of JSON items ");
             message.reply(new JsonObject(response));
 
         });

@@ -34,15 +34,15 @@ public class RemoteDataHandlerVerticle extends AbstractVerticle {
         eventBus.consumer(Services.FETCHWEBDATA.toString(),message -> {
             // Do something with Vert.x async, reactive APIs
 
-            final Message<Object> theMessage = message;
-            String theMessagePathParm = (String) theMessage.body();
-            logger.debug("RemoteDataHandlerVerticle received request with parm: " + theMessagePathParm);
+            JsonObject fetchMessage = JsonObject.mapFrom(message.body());
+            String theMessagePathParm = fetchMessage.getValue("path").toString();
+            logger.info("RemoteDataHandlerVerticle received request with parm: " + theMessagePathParm);
 
             executeLongRunningBlockingOperation();
 
-            logger.debug("RemoteDataHandlerVerticle processed request");
-
+            logger.info("RemoteDataHandlerVerticle processed request");
             final Map<String, Object> response = new HashMap<>();
+            response.put("path", theMessagePathParm);
             response.put("body", "...RemoteDataHandler fetched HTML...");
             message.reply(new JsonObject(response));
 
