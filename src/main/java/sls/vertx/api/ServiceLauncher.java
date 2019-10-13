@@ -17,6 +17,7 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
 
     private static final Logger logger = Logger.getLogger(ServiceLauncher.class);
     public Vertx vertx;
+    private static List<Boolean> verticleResult = new ArrayList<>();
 
     {
         VertxOptions vertxOptions = new VertxOptions()
@@ -39,29 +40,37 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
                 deploy(RemoteDataFetchVerticle.class.getName(), standardDeploymentOptions),
                 deploy(DataBaseVerticle.class.getName(), standardDeploymentOptions),
                 deploy(DataExtractorVerticle.class.getName(), standardDeploymentOptions),
+//                deploy("just testing fail", standardDeploymentOptions),
                 deploy(EventHubVerticle.class.getName(), standardDeploymentOptions)
 
-        ).whenComplete((nada, thrown) -> {
-            logger.info("Deploy verticles complete.");
+        ).whenComplete((res, err) -> {
+            logger.info("Deploy all verticles complete.");
+            for (Boolean result: verticleResult)
+            {
+                if (result == false)
+                {
+                    logger.info("One or more verticles did NOT deploy successfully.");
+                    //take action if necessary
+                }
+            }
         });
     }
 
     private CompletableFuture<Boolean> deploy(String name, DeploymentOptions opts) {
         CompletableFuture<Boolean> cf = new CompletableFuture<Boolean>();
 
-        CompletableFuture.supplyAsync(() -> {
-            vertx.deployVerticle(name, opts, res -> {
+             vertx.deployVerticle(name, opts, res -> {
                 if (res.failed()) {
                     logger.error("Failed to deploy verticle " + name);
+                    verticleResult.add(false);
                     cf.complete(false);
                 } else {
                     logger.info("Deployed verticle " + name);
+                    verticleResult.add(true);
                     cf.complete(true);
                 }
             });
-            return null;
-        });
-        return cf;
+          return cf;
     }
 
     @Override
