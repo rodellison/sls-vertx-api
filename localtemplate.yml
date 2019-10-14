@@ -9,7 +9,7 @@ Transform: AWS::Serverless-2016-10-31
 Resources:
   FloridaKeysAPI:
     Type: AWS::Serverless::Function
-    Properties: 
+    Properties:
       FunctionName: Sls-Vertx-Api
       Runtime: java8
       Timeout: 60
@@ -43,6 +43,6 @@ Resources:
             Method: GET
         Api6:
           Type: Api
-            Properties:
+          Properties:
             Path: /loaddata/{yearmonth}
             Method: GET

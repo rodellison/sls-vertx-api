@@ -34,10 +34,10 @@ public class EventHubVerticle extends AbstractVerticle {
 
                 eventBus.request(Services.FETCHWEBDATA.toString(), messageJson, rs -> {
                     if (rs.succeeded()) {
-                        logger.info("RemoteDataHandler: SUCCESS");
+                        logger.info("RemoteDataFetch: SUCCESS");
                         remoteDataHandlerFuture.complete(rs.result().body().toString());
                     } else {
-                        logger.info("RemoteDataHandler: FAILED");
+                        logger.info("RemoteDataFetch: FAILED");
                         remoteDataHandlerFuture.complete(rs.cause().getMessage());
                     }
                 });
@@ -57,16 +57,16 @@ public class EventHubVerticle extends AbstractVerticle {
                 logger.debug(resFetch.result());
                 JsonObject fetchResult = new JsonObject(resFetch.result());
 
-                //Calling out to an external web page to get data could take time, trying executeBlocking here
+                //Parsing entirety of fetched data could take some time
                 vertx.<String>executeBlocking(execBlockFuture -> {
                     final CompletableFuture<String> dataExtractHandlerFuture = new CompletableFuture<String>();
 
                     eventBus.request(Services.EXTRACTWEBDATA.toString(), fetchResult, rs -> {
                         if (rs.succeeded()) {
-                            logger.info("DataExtractHandler: SUCCESS");
+                            logger.info("DataExtractor: SUCCESS");
                             dataExtractHandlerFuture.complete(rs.result().body().toString());
                         } else {
-                            logger.info("DataExtractHandler: FAILED");
+                            logger.info("DataExtractor: FAILED");
                             dataExtractHandlerFuture.complete(rs.cause().getMessage());
                         }
                     });
@@ -85,16 +85,16 @@ public class EventHubVerticle extends AbstractVerticle {
 
                     logger.debug(resExtract.result());
                     JsonObject extractResult = new JsonObject(resExtract.result());
-                    //Calling out to an external web page to get data could take time, trying executeBlocking here
+                    //Inserting to Database could be time consuming
                     vertx.<String>executeBlocking(execBlockFuture -> {
                         final CompletableFuture<String> dbHandlerFuture = new CompletableFuture<String>();
 
                         eventBus.request(Services.INSERTDBDATA.toString(), extractResult, rs -> {
                             if (rs.succeeded()) {
-                                logger.info("DBHandler: SUCCESS");
+                                logger.info("DataBase: SUCCESS");
                                 dbHandlerFuture.complete(rs.result().body().toString());
                             } else {
-                                logger.info("DBHandler: FAILED");
+                                logger.info("DataBase: FAILED");
                                 dbHandlerFuture.complete(rs.cause().getMessage());
                             }
                         });
@@ -131,16 +131,16 @@ public class EventHubVerticle extends AbstractVerticle {
 
             logger.info("GET:/data/{yearmonth} function invoked with parm: " + theMessagePathParm);
 
-            //Calling out to an external web page to get data could take time, trying executeBlocking here
+            //Connecting to, and getting data could take time...
             vertx.<String>executeBlocking(execBlockFuture -> {
                 final CompletableFuture<String> remoteDataHandlerFuture = new CompletableFuture<String>();
 
                 eventBus.request(Services.GETDBDATA.toString(), messageJson , rs -> {
                     if (rs.succeeded()) {
-                        logger.info("DBHandler: SUCCESS");
+                        logger.info("DataBase: SUCCESS");
                         remoteDataHandlerFuture.complete(rs.result().body().toString());
                     } else {
-                        logger.info("DBHandler: FAILED");
+                        logger.info("DataBase: FAILED");
                         remoteDataHandlerFuture.complete(rs.cause().getMessage());
                     }
                 });

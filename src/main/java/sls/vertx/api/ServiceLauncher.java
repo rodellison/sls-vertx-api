@@ -30,11 +30,6 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
         DeploymentOptions standardDeploymentOptions = new DeploymentOptions()
                 .setInstances(instanceCount);
 
-//        DeploymentOptions workerDeploymentOptions = new DeploymentOptions()
-//                .setWorkerPoolName("data-processing-pool")
-//                .setWorkerPoolSize(instanceCount)
-//                .setWorker(true);
-
         CompletableFuture.allOf(
 
                 deploy(RemoteDataFetchVerticle.class.getName(), standardDeploymentOptions),
