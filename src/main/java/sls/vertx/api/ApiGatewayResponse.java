@@ -5,7 +5,9 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+// Import log4j classes.
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,7 +49,7 @@ public class ApiGatewayResponse {
 
 	public static class Builder {
 
-		private static final Logger LOG = Logger.getLogger(Builder.class);
+		private static final Logger LOG = LogManager.getLogger(Builder.class);
 
 		private static final ObjectMapper objectMapper = new ObjectMapper();
 

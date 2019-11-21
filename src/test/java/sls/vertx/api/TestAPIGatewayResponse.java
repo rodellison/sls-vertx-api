@@ -3,7 +3,9 @@ package sls.vertx.api;
 
 import io.vertx.core.json.JsonObject;
 import org.junit.Assert;
-import org.apache.log4j.Logger;
+// Import log4j classes.
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.junit.Test;
 import org.junit.jupiter.api.*;
 
@@ -12,7 +14,7 @@ import java.util.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestAPIGatewayResponse {
 
-    private final Logger logger = Logger.getLogger(TestAPIGatewayResponse.class);
+    private final Logger logger = LogManager.getLogger(TestAPIGatewayResponse.class);
 
     @Test
     @Order(1)

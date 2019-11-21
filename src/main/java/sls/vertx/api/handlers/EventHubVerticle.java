@@ -4,7 +4,9 @@ import sls.vertx.api.Services;
 import io.vertx.core.*;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
-import org.apache.log4j.Logger;
+// Import log4j classes.
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 
 public class EventHubVerticle extends AbstractVerticle {
 
-    private static final Logger logger = Logger.getLogger(EventHubVerticle.class);
+    private static final Logger logger = LogManager.getLogger(EventHubVerticle.class);
 
     @Override
     public void start(Promise<Void> startPromise) {

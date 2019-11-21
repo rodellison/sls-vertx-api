@@ -6,7 +6,9 @@ import sls.vertx.api.handlers.DataExtractorVerticle;
 import sls.vertx.api.handlers.EventHubVerticle;
 import sls.vertx.api.handlers.RemoteDataFetchVerticle;
 import org.junit.Assert;
-import org.apache.log4j.Logger;
+// Import log4j classes.
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.jupiter.api.*;
@@ -17,7 +19,7 @@ import java.util.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestEventHandler {
 
-    private final Logger logger = Logger.getLogger(TestEventHandler.class);
+    private final Logger logger = LogManager.getLogger(TestEventHandler.class);
     private static ServiceLauncher sl;
     private Context testContext;
 

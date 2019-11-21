@@ -5,7 +5,9 @@ import sls.vertx.api.handlers.DataBaseVerticle;
 import sls.vertx.api.handlers.DataExtractorVerticle;
 import sls.vertx.api.handlers.EventHubVerticle;
 import sls.vertx.api.handlers.RemoteDataFetchVerticle;
-import org.apache.log4j.Logger;
+// Import log4j classes.
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestDataHandler {
 
-    private final Logger logger = Logger.getLogger(TestDataHandler.class);
+    private final Logger logger = LogManager.getLogger(TestDataHandler.class);
     private static ServiceLauncher sl;
     private Context testContext;
 

@@ -5,14 +5,16 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
-import org.apache.log4j.Logger;
+// Import log4j classes.
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RemoteDataFetchVerticle extends AbstractVerticle {
 
-    private static final Logger logger = Logger.getLogger(RemoteDataFetchVerticle.class);
+    private static final Logger logger = LogManager.getLogger(RemoteDataFetchVerticle.class);
 
     public void executeLongRunningBlockingOperation() {
         try {

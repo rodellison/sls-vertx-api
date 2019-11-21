@@ -8,14 +8,16 @@ import sls.vertx.api.handlers.EventHubVerticle;
 import sls.vertx.api.handlers.RemoteDataFetchVerticle;
 import io.vertx.core.*;
 import io.vertx.core.json.JsonObject;
-import org.apache.log4j.Logger;
+// Import log4j classes.
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
 import java.util.concurrent.*;
 
 public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
-    private static final Logger logger = Logger.getLogger(ServiceLauncher.class);
+    private static final Logger logger = LogManager.getLogger(ServiceLauncher.class);
     public Vertx vertx;
     private static List<Boolean> verticleResult = new ArrayList<>();
 
