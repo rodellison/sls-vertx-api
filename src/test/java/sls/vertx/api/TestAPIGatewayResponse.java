@@ -2,12 +2,15 @@ package sls.vertx.api;
 
 
 import io.vertx.core.json.JsonObject;
-import org.junit.Assert;
+
 // Import log4j classes.
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.junit.Test;
+
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
@@ -30,10 +33,10 @@ public class TestAPIGatewayResponse {
                 .setRawBody("test")
                 .build();
 
-        Assert.assertTrue(testAPIGatewayResponse.getBody().equals("test"));
-        Assert.assertTrue(testAPIGatewayResponse.getStatusCode() == 200);
-        Assert.assertTrue(testAPIGatewayResponse.getHeaders().isEmpty() == true);
-        Assert.assertTrue(testAPIGatewayResponse.isIsBase64Encoded() == false);
+        assertTrue(testAPIGatewayResponse.getBody().equals("test"));
+        assertTrue(testAPIGatewayResponse.getStatusCode() == 200);
+        assertTrue(testAPIGatewayResponse.getHeaders().isEmpty() == true);
+        assertTrue(testAPIGatewayResponse.isIsBase64Encoded() == false);
 
     }
 
@@ -50,7 +53,7 @@ public class TestAPIGatewayResponse {
                 .setObjectBody(testObjectBody)
                 .build();
 
-        Assert.assertTrue(testAPIGatewayResponse.getBody().contains("test1"));
+        assertTrue(testAPIGatewayResponse.getBody().contains("test1"));
     }
 
 

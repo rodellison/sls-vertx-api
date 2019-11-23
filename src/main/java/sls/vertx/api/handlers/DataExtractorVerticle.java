@@ -33,7 +33,7 @@ public class DataExtractorVerticle extends AbstractVerticle {
         eventBus.consumer(Services.EXTRACTWEBDATA.toString(), message -> {
             // Do something with Vert.x async, reactive APIs
             JsonObject dataToExtract = JsonObject.mapFrom(message.body());
-            String theMessagePathParm = dataToExtract.getValue("path").toString();
+            String theMessagePathParm = dataToExtract.getValue("pathParameters").toString();
             logger.info("DataExtracterHandlerVerticle received request with parm: " + theMessagePathParm);
 
             executeLongRunningBlockingOperation();
@@ -41,7 +41,7 @@ public class DataExtractorVerticle extends AbstractVerticle {
 
             logger.info("DataExtracterHandlerVerticle processed request for: " + theMessagePathParm);
             final Map<String, Object> response = new HashMap<>();
-            response.put("path", theMessagePathParm);
+            response.put("pathParameters", theMessagePathParm);
             response.put("body", "...a set of JSON items ");
             message.reply(new JsonObject(response));
 

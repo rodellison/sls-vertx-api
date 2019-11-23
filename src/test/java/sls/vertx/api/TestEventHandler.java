@@ -5,13 +5,13 @@ import sls.vertx.api.handlers.DataBaseVerticle;
 import sls.vertx.api.handlers.DataExtractorVerticle;
 import sls.vertx.api.handlers.EventHubVerticle;
 import sls.vertx.api.handlers.RemoteDataFetchVerticle;
-import org.junit.Assert;
+
 // Import log4j classes.
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -20,14 +20,10 @@ import java.util.*;
 public class TestEventHandler {
 
     private final Logger logger = LogManager.getLogger(TestEventHandler.class);
-    private static ServiceLauncher sl;
-    private Context testContext;
+    private static ServiceLauncher sl = new ServiceLauncher();;
+    private static Context testContext = null;
 
-    @BeforeClass
-    public static void setUp() throws IOException {
-
-         //This call establishes service front door, and starts vertx
-        sl = new ServiceLauncher();
+    {
         try
         {
             //Just waiting one second for verticles to get up, before running tests
@@ -51,7 +47,7 @@ public class TestEventHandler {
 
         logger.info("Test EventHandlerVerticle responds for GET:/users");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse.getBody().contains("Received GET:/users"));
+        assertTrue(theAPIGateWayResponse.getBody().contains("Received GET:/users"));
 
     }
 
@@ -67,7 +63,7 @@ public class TestEventHandler {
 
         logger.info("Test EventHandlerVerticle responds for GET:/users/{id}");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse.getBody().contains("{id}"));
+        assertTrue(theAPIGateWayResponse.getBody().contains("{id}"));
 
     }
 
@@ -83,7 +79,7 @@ public class TestEventHandler {
 
         logger.info("Test EventHandlerVerticle responds for POST:/users");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse.getBody().contains("Received POST:/users"));
+        assertTrue(theAPIGateWayResponse.getBody().contains("Received POST:/users"));
 
     }
 
@@ -99,7 +95,7 @@ public class TestEventHandler {
 
         logger.info("Test EventHandlerVerticle responds for Post:/users");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse.getBody().contains("Received PUT:/users/{id}"));
+        assertTrue(theAPIGateWayResponse.getBody().contains("Received PUT:/users/{id}"));
 
     }
 
@@ -115,7 +111,7 @@ public class TestEventHandler {
 
         logger.info("Test EventHandlerVerticle responds for DELETE:/users/{id}");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse.getBody().contains("Received DELETE:/users/{id}"));
+        assertTrue(theAPIGateWayResponse.getBody().contains("Received DELETE:/users/{id}"));
 
     }
 
@@ -131,7 +127,7 @@ public class TestEventHandler {
 
         logger.info("Test EventHandlerVerticle responds with failure");
         theAPIGateWayResponse = sl.handleRequest(map, testContext);
-        Assert.assertTrue(theAPIGateWayResponse.getBody().contains("No handlers for address"));
+        assertTrue(theAPIGateWayResponse.getBody().contains("No handlers for address"));
 
     }
 

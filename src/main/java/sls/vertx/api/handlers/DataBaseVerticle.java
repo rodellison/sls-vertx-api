@@ -34,16 +34,16 @@ public class DataBaseVerticle extends AbstractVerticle {
             // Do something with Vert.x async, reactive APIs
 
             JsonObject dbItemsToGet = JsonObject.mapFrom(message.body());
-             String theMessagePathParm = dbItemsToGet.getValue("path").toString();
+             String theMessagePathParm = dbItemsToGet.getValue("pathParameters").toString();
 
-            logger.info("DBHandlerVerticle received Get request: " + dbItemsToGet.getValue("path"));
+            logger.info("DBHandlerVerticle received Get request: " + dbItemsToGet.getValue("pathParameters"));
             executeLongRunningBlockingOperation();
-            logger.info("DBHandlerVerticle processed Get request: " + dbItemsToGet.getValue("path"));
+            logger.info("DBHandlerVerticle processed Get request: " + dbItemsToGet.getValue("pathParameters"));
 
             final Map<String, Object> response = new HashMap<>();
 
             response.put("statusCode", 200);
-            response.put("path", theMessagePathParm);
+            response.put("pathParameters", theMessagePathParm);
             response.put("body", "...database get completed for: " + theMessagePathParm);
 
             message.reply(new JsonObject(response).encode());
@@ -53,14 +53,14 @@ public class DataBaseVerticle extends AbstractVerticle {
             // Do something with Vert.x async, reactive APIs
 
             JsonObject dbItemToInsert = JsonObject.mapFrom(message.body());
-            String theMessagePathParm = dbItemToInsert.getValue("path").toString();
+            String theMessagePathParm = dbItemToInsert.getValue("pathParameters").toString();
 
-            logger.info("DBHandlerVerticle received Insert request: " + dbItemToInsert.getValue("path"));
+            logger.info("DBHandlerVerticle received Insert request: " + dbItemToInsert.getValue("pathParameters"));
             executeLongRunningBlockingOperation();
             logger.info("DBHandlerVerticle processed Insert request for: " + theMessagePathParm);
 
             final Map<String, Object> response = new HashMap<>();
-            response.put("path", theMessagePathParm);
+            response.put("pathParameters", theMessagePathParm);
             response.put("body", "...database insert completed for: " + theMessagePathParm);
             message.reply(new JsonObject(response));
 

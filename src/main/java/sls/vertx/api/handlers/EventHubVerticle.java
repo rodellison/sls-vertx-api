@@ -26,7 +26,7 @@ public class EventHubVerticle extends AbstractVerticle {
 
             String theMessage = message.body().toString();
             JsonObject messageJson = new JsonObject(theMessage);
-            String theMessagePathParm = messageJson.getValue("path").toString();
+            String theMessagePathParm = messageJson.getValue("pathParameters").toString();
 
             logger.info("GET:/loaddata/{yearmonth} function invoked with parm: " + theMessagePathParm);
 
