@@ -1,5 +1,6 @@
-# sam local start-api -t localtemplate.yml
-# sam local start-api -t localtemplate.yml  --skip-pull-image     (after initial runs)
+# using port 3001 since alot of other stuff, node, etc.. typically runs on 3000
+# sam local start-api -p 3001 -t localtemplate.yml
+# sam local start-api -p 3001 -t localtemplate.yml  --skip-pull-image     (after initial runs)
 
 # note: CodeURI element can be a .jar file, or path to the code extracted from a shaded jar  - using the Unarchiver
 

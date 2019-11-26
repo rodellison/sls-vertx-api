@@ -20,7 +20,7 @@ import java.util.*;
 public class TestEventHandler {
 
     private final Logger logger = LogManager.getLogger(TestEventHandler.class);
-    private static ServiceLauncher sl = new ServiceLauncher();;
+    private static ServiceLauncher sl = new ServiceLauncher();
     private static Context testContext = null;
 
     {
@@ -131,16 +131,16 @@ public class TestEventHandler {
 
     }
 
-
-    @AfterAll
-    public static void tearDown()
-    {
-        sl.vertx.undeploy(DataBaseVerticle.class.getName());
-        sl.vertx.undeploy(DataExtractorVerticle.class.getName());
-        sl.vertx.undeploy(RemoteDataFetchVerticle.class.getName());
-        sl.vertx.undeploy(EventHubVerticle.class.getName());
-        sl = null;
-    }
+//
+//    @AfterAll
+//    public static void tearDown()
+//    {
+//        sl.vertx.undeploy(DataBaseVerticle.class.getName());
+//        sl.vertx.undeploy(DataExtractorVerticle.class.getName());
+//        sl.vertx.undeploy(RemoteDataFetchVerticle.class.getName());
+//        sl.vertx.undeploy(EventHubVerticle.class.getName());
+//        sl = null;
+//    }
 
 
 }

@@ -106,14 +106,14 @@ public class TestDataHandler {
 
     }
 
-    @AfterAll
-    public static void tearDown()
-    {
-        sl.vertx.undeploy(DataBaseVerticle.class.getName());
-        sl.vertx.undeploy(DataExtractorVerticle.class.getName());
-        sl.vertx.undeploy(RemoteDataFetchVerticle.class.getName());
-        sl.vertx.undeploy(EventHubVerticle.class.getName());
-        sl = null;
-    }
+//    @AfterAll
+//    public static void tearDown()
+//    {
+//        sl.vertx.undeploy(DataBaseVerticle.class.getName());
+//        sl.vertx.undeploy(DataExtractorVerticle.class.getName());
+//        sl.vertx.undeploy(RemoteDataFetchVerticle.class.getName());
+//        sl.vertx.undeploy(EventHubVerticle.class.getName());
+//        sl = null;
+//    }
 
 }
