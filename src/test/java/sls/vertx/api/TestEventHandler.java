@@ -42,6 +42,8 @@ public class TestEventHandler {
         Map<String, Object> map = new HashMap<>();
         map.put("httpMethod", "GET");
         map.put("resource", "/users");
+        map.put("pathParameters", "");
+        map.put("path", "/users");
 
         ApiGatewayResponse theAPIGateWayResponse;
 

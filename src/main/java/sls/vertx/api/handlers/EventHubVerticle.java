@@ -169,10 +169,36 @@ public class EventHubVerticle extends AbstractVerticle {
 
         eventBus.consumer("GET:/users", message -> {
             // Do something with Vert.x async, reactive APIs
+
+            //NOTE - As a Serverless AWS Gateway/Lambda function, this WILL NOT work as the context shuts down before
+            //the sending of messages to other verticles completes.  Leaving for now to observe, but it appears
+            //the code must use an Execute Blocking to ensure all verticles complete their work before returning
+            //the response to user.
+
+            // This does work though if using ECS to host a Vertx JAR that will just remain running. 
+
+            JsonObject messageJson = new JsonObject(message.body().toString());
+            eventBus.send(Services.GETUSERS.toString(), messageJson);
+
+
             final Map<String, Object> response = new HashMap<>();
             response.put("statusCode", 200);
             response.put("body", "Received GET:/users");
             message.reply(new JsonObject(response).encode());
+        });
+
+        eventBus.consumer(Services.GETUSERSFINISHED.toString(), message -> {
+            // Do something with Vert.x async, reactive APIs
+
+            // NOTE - As a Serverless AWS Gateway/Lambda function, this WILL NOT work as the context shuts down before
+            //the sending of messages to other verticles completes.  Leaving for now to observe, but it appears
+            //the code must use an Execute Blocking to ensure all verticles complete their work before returning
+            //the response to user.
+
+            logger.info("GETUSERSFINISHED in EventHubVerticle recieved message");
+            JsonObject messageJson = new JsonObject(message.body().toString());
+            logger.info(messageJson);
+
         });
 
         eventBus.consumer("GET:/users/{id}", message -> {

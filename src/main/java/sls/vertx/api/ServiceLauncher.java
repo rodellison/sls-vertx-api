@@ -2,10 +2,7 @@ package sls.vertx.api;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import sls.vertx.api.handlers.DataBaseVerticle;
-import sls.vertx.api.handlers.DataExtractorVerticle;
-import sls.vertx.api.handlers.EventHubVerticle;
-import sls.vertx.api.handlers.RemoteDataFetchVerticle;
+import sls.vertx.api.handlers.*;
 import io.vertx.core.*;
 import io.vertx.core.json.JsonObject;
 // Import log4j classes.
@@ -38,7 +35,8 @@ public class ServiceLauncher implements RequestHandler<Map<String, Object>, ApiG
                 deploy(DataBaseVerticle.class.getName(), standardDeploymentOptions),
                 deploy(DataExtractorVerticle.class.getName(), standardDeploymentOptions),
 //                deploy("just testing fail", standardDeploymentOptions),
-                deploy(EventHubVerticle.class.getName(), standardDeploymentOptions)
+                deploy(EventHubVerticle.class.getName(), standardDeploymentOptions),
+                deploy(UsersTestVerticle.class.getName(), standardDeploymentOptions)
 
         ).whenComplete((res, err) -> {
             logger.info("Deploy all verticles complete.");
